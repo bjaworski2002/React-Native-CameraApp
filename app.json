@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Lekcja4",
-    "slug": "Lekcja4",
+    "name": "CamApp",
+    "slug": "CamApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
