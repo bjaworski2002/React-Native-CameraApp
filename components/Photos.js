@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions} from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
 export default function Photos(props) {
@@ -17,25 +17,35 @@ export default function Photos(props) {
         tempPhotos.pop()
         setPhotos(tempPhotos)
     }
-    const renderItem = ({ item }) => {
+    const handleSingleImage = (item) => {
         console.log(item)
-        return (<Image
-            style={grid ? { height: w * 0.2, width: w * 0.8, margin: 5 } : { height: w * 0.2, width: w * 0.2, margin: 5 }}
-            source={{
-                uri: item.uri
-            }}
-        />)
+        props.navigation.navigate("singlephoto", item)
+    }
+    const renderItem = ({item}) => {
+        return (
+            <TouchableOpacity onPress={() => handleSingleImage(item)}><View style={grid ? {height: w * 0.2, width: w * 0.8, margin: 5} : {
+                height: w * 0.2,
+                width: w * 0.2,
+                margin: 5
+            }}>
+            <Image style={{flex: 1}}
+                source={{
+                    uri: item.uri
+                }}
+            />
+            </View>
+            </TouchableOpacity>
+        )
     }
     const cameraHandle = () => {
-        props.navigation.navigate("camera", { status: permissions, photoTake: (asset) => onPhotoTake(asset) })
+        props.navigation.navigate("camera", {status: permissions, photoTake: (asset) => onPhotoTake(asset)})
     }
     useEffect(() => {
         const grantPermissions = async () => {
-            let { status } = await MediaLibrary.requestPermissionsAsync();
+            let {status} = await MediaLibrary.requestPermissionsAsync();
             if (status !== 'granted') {
                 alert('brak uprawnień do czytania image-ów z galerii')
-            }
-            else {
+            } else {
                 let obj = await MediaLibrary.getAssetsAsync({
                     first: 100,           // ilość pobranych assetów
                     mediaType: 'photo'    // typ pobieranych danych, photo jest domyślne
@@ -49,13 +59,18 @@ export default function Photos(props) {
     return (
         <View style={styles.container}>
             <View style={styles.head}>
-                <Text onPress={gridHandle} style={styles.text2}>GRID / LIST</Text>
-                <TouchableOpacity onPress={cameraHandle} style={styles.text2}><Text style={styles.text2}>OPEN CAMERA</Text></TouchableOpacity>
+                <TouchableOpacity onPress={gridHandle}>
+                    <Text style={styles.text2}>GRID / LIST</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={cameraHandle} style={styles.text2}>
+                    <Text style={styles.text2}>OPEN CAMERA</Text>
+                </TouchableOpacity>
                 <Text style={styles.text2}>REMOVE SELECTED</Text>
             </View>
             <View style={styles.body}>
                 <FlatList
                     data={photos}
+                    keyExtractor={item => item.id.toString()}
                     renderItem={renderItem}
                     numColumns={grid ? 1 : 4}
                     key={grid ? 1 : 4}
