@@ -12,7 +12,13 @@ export default function Photos(props) {
     const gridHandle = () => {
         setGrid(!grid)
     }
+    const onPhotoTake = (asset) => {
+        let tempPhotos = [asset, ...photos]
+        tempPhotos.pop()
+        setPhotos(tempPhotos)
+    }
     const renderItem = ({ item }) => {
+        console.log(item)
         return (<Image
             style={grid ? { height: w * 0.2, width: w * 0.8, margin: 5 } : { height: w * 0.2, width: w * 0.2, margin: 5 }}
             source={{
@@ -21,7 +27,7 @@ export default function Photos(props) {
         />)
     }
     const cameraHandle = () => {
-        props.navigation.navigate("camera", { status: permissions })
+        props.navigation.navigate("camera", { status: permissions, photoTake: (asset) => onPhotoTake(asset) })
     }
     useEffect(() => {
         const grantPermissions = async () => {
