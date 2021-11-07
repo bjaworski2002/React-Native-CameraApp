@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions} from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
-export default function Photos(props) {
+function Photos(props) {
     const w = Dimensions.get("window").width
     const h = Dimensions.get("window").height
 
@@ -17,9 +17,12 @@ export default function Photos(props) {
         tempPhotos.pop()
         setPhotos(tempPhotos)
     }
+    const deleteHandle = (asset) => {
+        setPhotos(photos.filter(a => a.id !== asset.id))
+    }
     const handleSingleImage = (item) => {
         console.log(item)
-        props.navigation.navigate("singlephoto", item)
+        props.navigation.navigate("singlephoto", {item: item, onDelete: (asset) => deleteHandle(asset)})
     }
     const renderItem = ({item}) => {
         return (
@@ -105,3 +108,4 @@ const styles = StyleSheet.create({
         width: 40,
     }
 });
+export default React.memo(Photos)
