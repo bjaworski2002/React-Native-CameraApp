@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions } from 'react-native';
+import {Text, TouchableOpacity, View, Image, Dimensions, Share } from 'react-native';
 import * as MediaLibrary from "expo-media-library";
+
 export default function SinglePhoto(props){
 
     const w = Dimensions.get("window").width
     const h = Dimensions.get("window").height
+
     const deleteHandle = async (asset) => {
         try {
             await MediaLibrary.deleteAssetsAsync(asset)
@@ -22,8 +24,8 @@ export default function SinglePhoto(props){
                }}
         />
         <View style={{flex: 1, flexDirection: 'row', justifyContent: "space-around"}}>
-            <TouchableOpacity><Text style={{margin: w * 0.04, fontSize: w * 0.08}}>SHARE</Text></TouchableOpacity>
-            <TouchableOpacity onPress={(asset) => deleteHandle(props.route.params.item)}><Text style={{margin: w * 0.04, fontSize: w * 0.08}}>DELETE</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => /* TO DO */console.log("123")}><Text style={{margin: w * 0.04, fontSize: w * 0.08}}>SHARE</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteHandle(props.route.params.item)}><Text style={{margin: w * 0.04, fontSize: w * 0.08}}>DELETE</Text></TouchableOpacity>
         </View>
     </View>)
 }

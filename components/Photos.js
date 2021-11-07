@@ -7,6 +7,7 @@ function Photos(props) {
     const h = Dimensions.get("window").height
 
     const [photos, setPhotos] = useState([])
+    const [selectedPhotos, setSelectedPhotos] = useState([])
     const [grid, setGrid] = useState(true)
     const [permissions, setPermissions] = useState("")
     const gridHandle = () => {
@@ -20,22 +21,41 @@ function Photos(props) {
     const deleteHandle = (asset) => {
         setPhotos(photos.filter(a => a.id !== asset.id))
     }
+    const removeHandle = () => {
+
+    }
     const handleSingleImage = (item) => {
-        console.log(item)
         props.navigation.navigate("singlephoto", {item: item, onDelete: (asset) => deleteHandle(asset)})
+    }
+    const handleLongPress = (item) => {
+        console.log(item)
+        let temp = selectedPhotos
+        selectedPhotos.push(item)
+        setSelectedPhotos(temp)
     }
     const renderItem = ({item}) => {
         return (
-            <TouchableOpacity onPress={() => handleSingleImage(item)}><View style={grid ? {height: w * 0.2, width: w * 0.8, margin: 5} : {
-                height: w * 0.2,
-                width: w * 0.2,
-                margin: 5
-            }}>
-            <Image style={{flex: 1}}
-                source={{
-                    uri: item.uri
-                }}
-            />
+            <TouchableOpacity onPress={() => handleSingleImage(item)} onLongPress={() => handleLongPress(item)}><View
+                style={[{backgroundColor: '#cc3035', alignItems: 'center', borderRadius: 10}, grid ? {
+                    height: w * 0.2,
+                    width: w * 0.8,
+                    margin: 5
+                } : {
+                    height: w * 0.2,
+                    width: w * 0.2,
+                    margin: 5
+                }]}>
+                <Image
+                    source={{
+                        uri: item.uri
+                    }}
+                    style={grid ? {flex: 1, height: w * 0.17, width: w * 0.74, margin: 5} : {
+                        flex: 1,
+                        height: w * 0.17,
+                        width: w * 0.17,
+                        margin: 5
+                    }}
+                />
             </View>
             </TouchableOpacity>
         )
@@ -68,7 +88,9 @@ function Photos(props) {
                 <TouchableOpacity onPress={cameraHandle} style={styles.text2}>
                     <Text style={styles.text2}>OPEN CAMERA</Text>
                 </TouchableOpacity>
-                <Text style={styles.text2}>REMOVE SELECTED</Text>
+                <TouchableOpacity onPress={removeHandle} style={styles.text2}>
+                    <Text style={styles.text2}>REMOVE SELECTED</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.body}>
                 <FlatList
@@ -82,6 +104,7 @@ function Photos(props) {
         </View>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
