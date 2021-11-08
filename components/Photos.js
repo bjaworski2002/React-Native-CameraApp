@@ -21,22 +21,33 @@ function Photos(props) {
     const deleteHandle = (asset) => {
         setPhotos(photos.filter(a => a.id !== asset.id))
     }
-    const removeHandle = () => {
-
+    const removeHandle = async () => {
+        await selectedPhotos.map(async e => {
+            await MediaLibrary.deleteAssetsAsync(e)
+        })
+        await selectedPhotos.map(async e => {
+            await setPhotos(photos.filter(a => a.id !== e.id))
+        })
+        await setSelectedPhotos([])
     }
     const handleSingleImage = (item) => {
         props.navigation.navigate("singlephoto", {item: item, onDelete: (asset) => deleteHandle(asset)})
     }
-    const handleLongPress = (item) => {
-        console.log(item)
+    const handleLongPress = async (item) => {
         let temp = selectedPhotos
-        selectedPhotos.push(item)
-        setSelectedPhotos(temp)
+        temp = temp.filter(a => a.id !== item.id)
+        temp.push(item)
+        await setSelectedPhotos(temp)
+        await console.log(selectedPhotos)
+    }
+    const checkRepeat = (item) => {
+        if (selectedPhotos.filter(a => a.id === item.id).length > 0) return true
+        else return false
     }
     const renderItem = ({item}) => {
         return (
             <TouchableOpacity onPress={() => handleSingleImage(item)} onLongPress={() => handleLongPress(item)}><View
-                style={[{backgroundColor: '#cc3035', alignItems: 'center', borderRadius: 10}, grid ? {
+                style={[{backgroundColor: checkRepeat(item) ? "green" : "red", alignItems: 'center', borderRadius: 10}, grid ? {
                     height: w * 0.2,
                     width: w * 0.8,
                     margin: 5
