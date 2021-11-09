@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useMemo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions} from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
 function Photos(props) {
@@ -15,39 +15,37 @@ function Photos(props) {
     }
     const onPhotoTake = (asset) => {
         let tempPhotos = [asset, ...photos]
-        tempPhotos.pop()
+        if (tempPhotos.length > 100) tempPhotos.pop()
+        console.log(tempPhotos[0])
         setPhotos(tempPhotos)
     }
     const deleteHandle = (asset) => {
         setPhotos(photos.filter(a => a.id !== asset.id))
     }
-    const removeHandle = async () => {
-        await selectedPhotos.map(async e => {
+    const removeHandle = () => {
+        selectedPhotos.map(async e => {
             await MediaLibrary.deleteAssetsAsync(e)
+            setPhotos(photos.filter(a => a.filename !== e.filename))
         })
-        await selectedPhotos.map(async e => {
-            await setPhotos(photos.filter(a => a.id !== e.id))
-        })
-        await setSelectedPhotos([])
+        setSelectedPhotos([])
     }
     const handleSingleImage = (item) => {
-        props.navigation.navigate("singlephoto", {item: item, onDelete: (asset) => deleteHandle(asset)})
+        props.navigation.navigate("singlephoto", { item: item, onDelete: (asset) => deleteHandle(asset) })
     }
     const handleLongPress = async (item) => {
         let temp = selectedPhotos
         temp = temp.filter(a => a.id !== item.id)
         temp.push(item)
-        await setSelectedPhotos(temp)
-        await console.log(selectedPhotos)
+        setSelectedPhotos(temp)
     }
     const checkRepeat = (item) => {
         if (selectedPhotos.filter(a => a.id === item.id).length > 0) return true
         else return false
     }
-    const renderItem = ({item}) => {
+    const renderItem = ({ item }) => {
         return (
             <TouchableOpacity onPress={() => handleSingleImage(item)} onLongPress={() => handleLongPress(item)}><View
-                style={[{backgroundColor: checkRepeat(item) ? "green" : "red", alignItems: 'center', borderRadius: 10}, grid ? {
+                style={[{ backgroundColor: checkRepeat(item) ? "green" : "red", alignItems: 'center', borderRadius: 10 }, grid ? {
                     height: w * 0.2,
                     width: w * 0.8,
                     margin: 5
@@ -60,7 +58,7 @@ function Photos(props) {
                     source={{
                         uri: item.uri
                     }}
-                    style={grid ? {flex: 1, height: w * 0.17, width: w * 0.74, margin: 5} : {
+                    style={grid ? { flex: 1, height: w * 0.17, width: w * 0.74, margin: 5 } : {
                         flex: 1,
                         height: w * 0.17,
                         width: w * 0.17,
@@ -72,24 +70,27 @@ function Photos(props) {
         )
     }
     const cameraHandle = () => {
-        props.navigation.navigate("camera", {status: permissions, photoTake: (asset) => onPhotoTake(asset)})
+        props.navigation.navigate("camera", { status: permissions, photoTake: (asset) => onPhotoTake(asset) })
+    }
+    const grantPermissions = async () => {
+        let { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+            alert('brak uprawnień do czytania image-ów z galerii')
+        } else {
+            let obj = await MediaLibrary.getAssetsAsync({
+                first: 100,           // ilość pobranych assetów
+                mediaType: 'photo'    // typ pobieranych danych, photo jest domyślne
+            })
+            setPermissions(status)
+            setPhotos(obj.assets)
+        }
     }
     useEffect(() => {
-        const grantPermissions = async () => {
-            let {status} = await MediaLibrary.requestPermissionsAsync();
-            if (status !== 'granted') {
-                alert('brak uprawnień do czytania image-ów z galerii')
-            } else {
-                let obj = await MediaLibrary.getAssetsAsync({
-                    first: 100,           // ilość pobranych assetów
-                    mediaType: 'photo'    // typ pobieranych danych, photo jest domyślne
-                })
-                setPermissions(status)
-                setPhotos(obj.assets)
-            }
-        }
         grantPermissions()
     }, [])
+    useEffect(() => {
+        grantPermissions()
+    }, [photos])
     return (
         <View style={styles.container}>
             <View style={styles.head}>
@@ -106,7 +107,7 @@ function Photos(props) {
             <View style={styles.body}>
                 <FlatList
                     data={photos}
-                    keyExtractor={item => item.id.toString()}
+                    extraData={selectedPhotos}
                     renderItem={renderItem}
                     numColumns={grid ? 1 : 4}
                     key={grid ? 1 : 4}
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
         padding: 10,
         flex: 1,
         flexDirection: "row",
-        justifyContent: "space-around"
+        justifyContent: "space-around",
     },
     body: {
         flex: 6,
