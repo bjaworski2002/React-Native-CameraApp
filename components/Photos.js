@@ -14,20 +14,21 @@ function Photos(props) {
         setGrid(!grid)
     }
     const onPhotoTake = (asset) => {
-        let tempPhotos = [asset, ...photos]
+        /*let tempPhotos = [asset, ...photos]
         if (tempPhotos.length > 100) tempPhotos.pop()
         console.log(tempPhotos[0])
-        setPhotos(tempPhotos)
+        setPhotos(tempPhotos)*/
+        grantPermissions()
     }
     const deleteHandle = (asset) => {
         setPhotos(photos.filter(a => a.id !== asset.id))
     }
-    const removeHandle = () => {
+    const removeHandle = async () => {
         selectedPhotos.map(async e => {
             await MediaLibrary.deleteAssetsAsync(e)
-            setPhotos(photos.filter(a => a.filename !== e.filename))
+            //await setPhotos(photos.filter(a => a.id !== e.id))
+            await setSelectedPhotos(selectedPhotos.filter(a => a.id !== e.id))
         })
-        setSelectedPhotos([])
     }
     const handleSingleImage = (item) => {
         props.navigation.navigate("singlephoto", { item: item, onDelete: (asset) => deleteHandle(asset) })
@@ -83,14 +84,16 @@ function Photos(props) {
             })
             setPermissions(status)
             setPhotos(obj.assets)
+            console.log('loop')
         }
     }
     useEffect(() => {
         grantPermissions()
     }, [])
     useEffect(() => {
-        grantPermissions()
-    }, [photos])
+          grantPermissions()
+    }, [selectedPhotos])
+
     return (
         <View style={styles.container}>
             <View style={styles.head}>
