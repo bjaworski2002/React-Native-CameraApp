@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, Animated} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions} from 'react-native';
 import {Camera} from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { LogBox } from 'react-native';
