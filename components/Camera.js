@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, Animated} from 'react-native';
 import {Camera} from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { LogBox } from 'react-native';
@@ -7,10 +7,10 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
 ]);
-
 export default function CameraItem(props) {
     const [type, setType] = useState(Camera.Constants.Type.back);
     const [hasPermission, setHasPermission] = useState(null);
+    const [settings, setSettings] = useState(false)
     let camera
     useEffect(() => {
         (async () => {
@@ -60,6 +60,15 @@ export default function CameraItem(props) {
                                 <Image source={require('../assets/camera.png')} style={styles.img}/>
                             </TouchableOpacity>
                         </View>
+                        <View style={styles.button}>
+                            <TouchableOpacity
+                                onPress={async () => {
+                                    setSettings(!settings)
+                                }}
+                            >
+                                <Image source={require('../assets/setting.png')} style={styles.img}/>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </Camera>
             </View>
@@ -78,13 +87,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         margin: 20,
+        transform: [
+            {translateY: Dimensions.get("window").height * 0.65}
+        ]
     },
     button: {
-        backgroundColor: 'red',
+        backgroundColor: '#cc3035',
         height: 80,
         width: 80,
         padding: 10,
-        borderRadius: 20,
+        borderRadius: 40,
         margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
@@ -92,7 +104,7 @@ const styles = StyleSheet.create({
     img: {
         flex: 1,
         resizeMode: 'contain',
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
     },
 });

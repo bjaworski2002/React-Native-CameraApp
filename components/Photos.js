@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image, Dimensions, Button } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
 function Photos(props) {
     const w = Dimensions.get("window").width
-    const h = Dimensions.get("window").height
+    //const h = Dimensions.get("window").height
 
     const [photos, setPhotos] = useState([])
     const [selectedPhotos, setSelectedPhotos] = useState([])
@@ -14,7 +14,7 @@ function Photos(props) {
     const gridHandle = () => {
         setGrid(!grid)
     }
-    const onPhotoTake = (asset) => {
+    const onPhotoTake = () => {
         /*let tempPhotos = [asset, ...photos]
         if (tempPhotos.length > 100) tempPhotos.pop()
         console.log(tempPhotos[0])
@@ -43,8 +43,7 @@ function Photos(props) {
         }
     }
     const checkRepeat = (item) => {
-        if (selectedPhotos.filter(a => a.id === item.id).length > 0) return true
-        else return false
+        return selectedPhotos.filter(a => a.id === item.id).length > 0;
     }
     const renderItem = ({ item }) => {
         return (

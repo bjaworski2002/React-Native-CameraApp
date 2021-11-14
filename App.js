@@ -1,6 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useEffect} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Main from './components/Main';
@@ -29,9 +27,17 @@ export default function App() {
             headerTitleStyle: {
                 fontFamily: 'titleFont'
             },
-
         }} />
-        <Stack.Screen name="camera" component={Camera} options={{ title: "Aparat" }} />
+        <Stack.Screen name="camera" component={Camera} options={{
+            title: "Aparat",
+            headerStyle: {
+                backgroundColor: "#cc3035",
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontFamily: 'titleFont'
+            },
+        }} />
         <Stack.Screen name="singlephoto" component={SinglePhoto} options={{ title: "Wybrane zdjęcie" }} />
       </Stack.Navigator>
     </NavigationContainer>
