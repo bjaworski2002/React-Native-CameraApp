@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions, Button } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
 function Photos(props) {
@@ -8,7 +8,7 @@ function Photos(props) {
 
     const [photos, setPhotos] = useState([])
     const [selectedPhotos, setSelectedPhotos] = useState([])
-    const [grid, setGrid] = useState(true)
+    const [grid, setGrid] = useState(false)
     const [permissions, setPermissions] = useState("")
 
     const gridHandle = () => {
@@ -89,7 +89,7 @@ function Photos(props) {
             setPhotos(obj.assets)
         }
     }
-    useEffect(() => {
+    useEffect(async () => {
         grantPermissions()
     }, [])
     useEffect(() => {
@@ -99,15 +99,21 @@ function Photos(props) {
     return (
         <View style={styles.container}>
             <View style={styles.head}>
-                <TouchableOpacity onPress={gridHandle}>
-                    <Text style={styles.text2}>GRID / LIST</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={cameraHandle} style={styles.text2}>
-                    <Text style={styles.text2}>OPEN CAMERA</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={removeHandle} style={styles.text2}>
-                    <Text style={styles.text2}>REMOVE SELECTED</Text>
-                </TouchableOpacity>
+                <Button
+                    onPress={gridHandle}
+                    title={"GRID / LIST"}
+                    color={'#cc3035'}
+                />
+                <Button
+                    onPress={cameraHandle}
+                    title={"OPEN CAMERA"}
+                    color={'#cc3035'}
+                />
+                <Button
+                    onPress={removeHandle}
+                    title={"REMOVE SELECTED"}
+                    color={'#cc3035'}
+                />
             </View>
             <View style={styles.body}>
                 <FlatList
@@ -125,15 +131,15 @@ function Photos(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#303030',
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
     },
     head: {
-        padding: 10,
         flex: 1,
         flexDirection: "row",
         justifyContent: "space-around",
+        flexWrap: "wrap",
     },
     body: {
         flex: 6,
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
         ]
     },
     unSelectedItem: {
-        backgroundColor: 'red'
+        backgroundColor: '#cc3035'
     }
 });
 export default React.memo(Photos)
