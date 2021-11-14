@@ -10,6 +10,7 @@ function Photos(props) {
     const [selectedPhotos, setSelectedPhotos] = useState([])
     const [grid, setGrid] = useState(true)
     const [permissions, setPermissions] = useState("")
+
     const gridHandle = () => {
         setGrid(!grid)
     }
@@ -34,10 +35,12 @@ function Photos(props) {
         props.navigation.navigate("singlephoto", { item: item, onDelete: (asset) => deleteHandle(asset) })
     }
     const handleLongPress = async (item) => {
-        let temp = selectedPhotos
-        temp = temp.filter(a => a.id !== item.id)
-        temp.push(item)
-        setSelectedPhotos(temp)
+        if(selectedPhotos.length > 0 && selectedPhotos.filter(a => a.id === item.id).length > 0) {
+            setSelectedPhotos(selectedPhotos.filter(a => a.id !== item.id))
+        }
+        else {
+            setSelectedPhotos([...selectedPhotos, item])
+        }
     }
     const checkRepeat = (item) => {
         if (selectedPhotos.filter(a => a.id === item.id).length > 0) return true
@@ -46,7 +49,7 @@ function Photos(props) {
     const renderItem = ({ item }) => {
         return (
             <TouchableOpacity onPress={() => handleSingleImage(item)} onLongPress={() => handleLongPress(item)}><View
-                style={[{ backgroundColor: checkRepeat(item) ? "green" : "red", alignItems: 'center', borderRadius: 10 }, grid ? {
+                style={[checkRepeat(item) ? styles.selectedItem : styles.unSelectedItem, { alignItems: 'center', borderRadius: 10 }, grid ? {
                     height: w * 0.2,
                     width: w * 0.8,
                     margin: 5
@@ -84,7 +87,6 @@ function Photos(props) {
             })
             setPermissions(status)
             setPhotos(obj.assets)
-            console.log('loop')
         }
     }
     useEffect(() => {
@@ -144,6 +146,15 @@ const styles = StyleSheet.create({
     Image2: {
         height: 40,
         width: 40,
+    },
+    selectedItem: {
+        backgroundColor: 'green',
+        transform: [
+            {scale: 0.9},
+        ]
+    },
+    unSelectedItem: {
+        backgroundColor: 'red'
     }
 });
 export default React.memo(Photos)
