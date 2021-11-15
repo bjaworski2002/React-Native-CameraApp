@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, Animated} from 'react-native';
 import {Camera} from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { LogBox } from 'react-native';
@@ -11,12 +11,11 @@ export default function CameraItem(props) {
     const [type, setType] = useState(Camera.Constants.Type.back);
     const [hasPermission, setHasPermission] = useState(null);
     const [settings, setSettings] = useState(false)
+    const hamburgerRef = useRef(new Animated.Value(-1 * Dimensions.get("window").width)).current
     let camera
-    useEffect(() => {
-        (async () => {
-            const {status} = await Camera.requestCameraPermissionsAsync();
-            setHasPermission(status === 'granted');
-        })();
+    useEffect(async () => {
+        const {status} = await Camera.requestCameraPermissionsAsync();
+        setHasPermission(status === 'granted');
     }, []);
 
     if (hasPermission == null) {
@@ -53,7 +52,7 @@ export default function CameraItem(props) {
                                         let foto = await camera.takePictureAsync();
                                         let asset = await MediaLibrary.createAssetAsync(foto.uri);
                                         props.route.params.photoTake(asset)
-                                        alert(JSON.stringify(asset, null, 4))
+                                        alert("Zrobiono zdjęcie!")
                                     }
                                 }}
                             >
@@ -62,7 +61,13 @@ export default function CameraItem(props) {
                         </View>
                         <View style={styles.button}>
                             <TouchableOpacity
-                                onPress={async () => {
+                                onPress={() => {
+                                    Animated.timing(hamburgerRef, {
+                                        toValue: settings ? -1 * Dimensions.get("window").width / 2 : 0,
+                                        delay: 50,
+                                        duration: 200,
+                                        useNativeDriver: true
+                                    }).start()
                                     setSettings(!settings)
                                 }}
                             >
@@ -70,6 +75,11 @@ export default function CameraItem(props) {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    <Animated.View style={[styles.types, {
+                        transform: [
+                            {translateX: hamburgerRef}
+                        ]
+                    }]} />
                 </Camera>
             </View>
         );
@@ -107,4 +117,10 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
     },
+    types: {
+        position: 'absolute',
+        backgroundColor: 'black',
+        height: Dimensions.get("window").height,
+        width: Dimensions.get("window").width / 2,
+    }
 });

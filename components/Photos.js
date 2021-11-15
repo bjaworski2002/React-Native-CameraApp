@@ -19,7 +19,7 @@ function Photos(props) {
         if (tempPhotos.length > 100) tempPhotos.pop()
         console.log(tempPhotos[0])
         setPhotos(tempPhotos)*/
-        grantPermissions()
+        getPhotos()
     }
     const deleteHandle = (asset) => {
         setPhotos(photos.filter(a => a.id !== asset.id))
@@ -75,7 +75,7 @@ function Photos(props) {
     const cameraHandle = () => {
         props.navigation.navigate("camera", { status: permissions, photoTake: (asset) => onPhotoTake(asset) })
     }
-    const grantPermissions = async () => {
+    const getPhotos = async () => {
         let { status } = await MediaLibrary.requestPermissionsAsync();
         if (status !== 'granted') {
             alert('brak uprawnień do czytania image-ów z galerii')
@@ -89,10 +89,10 @@ function Photos(props) {
         }
     }
     useEffect(async () => {
-        grantPermissions()
+        getPhotos()
     }, [])
     useEffect(() => {
-          grantPermissions()
+          getPhotos()
     }, [selectedPhotos])
 
     return (
