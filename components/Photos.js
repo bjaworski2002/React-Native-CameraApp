@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, FlatList, Image, Dimensions, Button } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, Image, Dimensions, Button, Text } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
 function Photos(props) {

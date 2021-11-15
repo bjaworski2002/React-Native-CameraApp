@@ -18,9 +18,7 @@ export default function HamburgerMenu(props){
                     <View style={styles.item} key={id}>
                         <RadioButton value={e}
                                      status={item.values[id] === props.params[item.type] ? 'checked' : 'unchecked'}
-                                     onPress={() =>
-                                         props.onRadioPress(item.type, e)
-                                     }
+                                     onPress={() => props.onRadioPress(item.type, e)}
                         />
                         <Text style={styles.text}>{e}</Text>
                     </View>)
