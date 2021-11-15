@@ -22,6 +22,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.2",
+    "react-native-paper": "^4.10.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.8.0",
     "react-native-web": "0.17.1"
@@ -32,7 +33,12 @@
   "private": true,
   "name": "lekcja4",
   "version": "1.0.0",
-  "author": "",
+  "author": "bjaworski2002 <bjaworski2002@gmail.com>",
   "license": "ISC",
+  "repository": "git+https://github.com/bjaworski2002/React-Native-CameraApp.git",
+  "bugs": {
+    "url": "https://github.com/bjaworski2002/React-Native-CameraApp/issues"
+  },
+  "homepage": "https://github.com/bjaworski2002/React-Native-CameraApp#readme",
   "description": ""
 }

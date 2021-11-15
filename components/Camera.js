@@ -3,14 +3,23 @@ import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, Animated} f
 import {Camera} from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { LogBox } from 'react-native';
+import HamburgerMenu from "./Camera/HamburgerMenu";
 
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
 ]);
-export default function CameraItem(props) {
+function CameraItem(props) {
     const [type, setType] = useState(Camera.Constants.Type.back);
     const [hasPermission, setHasPermission] = useState(null);
     const [settings, setSettings] = useState(false)
+    const [params, setParams] = useState({
+        type: Camera.Constants.Type.front,
+        whiteBalance: "auto",
+        flashMode: "off",
+    })
+    const onRadioPress = (param, value) => {
+        setParams({...params, [param]: value})
+    }
     const hamburgerRef = useRef(new Animated.Value(-1 * Dimensions.get("window").width)).current
     let camera
     useEffect(async () => {
@@ -29,17 +38,16 @@ export default function CameraItem(props) {
                     ref={ref => {
                         camera = ref;
                     }} style={{flex: 1}}
-                    type={type}
+                    {...params}
                 >
                     <View style={styles.buttonContainer}>
                         <View style={styles.button}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    setType(
-                                        type === Camera.Constants.Type.back
-                                            ? Camera.Constants.Type.front
-                                            : Camera.Constants.Type.back
-                                    );
+                                    setParams(params.type === Camera.Constants.Type.back
+                                            ? {...params, type: Camera.Constants.Type.front}
+                                            : {...params, type: Camera.Constants.Type.back}
+                                    )
                                 }}
                             >
                                 <Image source={require('../assets/rotate.png')} style={styles.img}/>
@@ -65,7 +73,7 @@ export default function CameraItem(props) {
                                     Animated.timing(hamburgerRef, {
                                         toValue: settings ? -1 * Dimensions.get("window").width / 2 : 0,
                                         delay: 50,
-                                        duration: 200,
+                                        duration: 300,
                                         useNativeDriver: true
                                     }).start()
                                     setSettings(!settings)
@@ -78,13 +86,17 @@ export default function CameraItem(props) {
                     <Animated.View style={[styles.types, {
                         transform: [
                             {translateX: hamburgerRef}
-                        ]
-                    }]} />
+                        ],
+                        display: settings ? 'block' : 'none',
+                    }]} >
+                        <HamburgerMenu params={params} onRadioPress={onRadioPress} />
+                    </Animated.View>
                 </Camera>
             </View>
         );
     }
 }
+export default React.memo(CameraItem)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -119,7 +131,7 @@ const styles = StyleSheet.create({
     },
     types: {
         position: 'absolute',
-        backgroundColor: 'black',
+        backgroundColor: '#cc3035',
         height: Dimensions.get("window").height,
         width: Dimensions.get("window").width / 2,
     }
